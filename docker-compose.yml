@@ -1,0 +1,33 @@
+services:
+  blue:
+    image: nginx:alpine
+    container_name: app-blue
+    volumes:
+      - ./blue:/usr/share/nginx/html:ro
+    networks:
+      - bg-network
+
+  green:
+    image: nginx:alpine
+    container_name: app-green
+    volumes:
+      - ./green:/usr/share/nginx/html:ro
+    networks:
+      - bg-network
+
+  proxy:
+    image: nginx:alpine
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - blue
+      - green
+    networks:
+      - bg-network
+
+networks:
+  bg-network:
+    driver: bridge
